@@ -218,7 +218,9 @@ article p {
   <div class="newsletter">
     <div class="container">
       <h3>Like the Funion? Consider joining our newsletter!</h3>
-      <input type="text">
+      <!-- Added an associated label to the newsletter input after Accessibility Insights Assessments identified a failure. -->
+      <label for="newsletter-email">Email address</label>
+      <input type="text" id="newsletter-email">
       <!-- Changed onfocus to onclick so Sign up opens the window only when activated, not when it receives focus. -->
       <button type="button" onclick="getFocus()">Sign up</button></div>
       
