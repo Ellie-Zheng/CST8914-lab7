@@ -33,10 +33,12 @@
           <label for="name">Full name (required)</label><input id="name" name="name" type="text" />
         </div>
         <div class="control">
-          <label for="biography">Biography (required)</label>
+          <label for="biography">Biography (required)
+            <span>Include examples on your skills in JavaScript.</span>
+          </label>
+          <!-- Included the biography instructions in the label so screen readers can read them with the field name. -->
+          <textarea id="biography" name="biography" type="text"></textarea>
           <!-- Suggest removing type="text" because it is not a valid attribute for textarea. -->  
-          <textarea id="biography" name="biography" type="text" aria-describedby="biography-instructions"></textarea>
-          <span id="biography-instructions">Include examples on your skills in JavaScript.</span>
         </div>
 
         <!-- Grouped the gender radio buttons in a fieldset and used a legend to name the group. -->
@@ -98,7 +100,10 @@
               $referencedElement = $input;
             }
       // R.G. hint: fix next line ;)
-            $error = $('<a>' + message + '</a>');
+            // Added href so keyboard users can reach each error link and activate it to focus the related field. The $referencedElement.attr('id') gets the ID of the field with the error.
+            // $error = $('<a href="#' + $referencedElement.attr('id') + '">' + message + '</a>');
+            // Added an ID matching the field's aria-describedby so screen readers can read the error message as the field's description.
+            $error = $('<a href="#' + $referencedElement.attr('id') + '" id="' + input + '_description">' + message + '</a>');
             $error.click(function (e) {
               // If we rely on the link's href pointing to the input's ID, it doesn't trigger forms mode in screen readers
               $referencedElement.focus();
@@ -107,9 +112,11 @@
             $elementToDescribe.attr('aria-describedby', input + '_description');
             $errorContainer.append('<li>').find('li:last').append($error);
       
-            if ($(':not(form):focus').length === 0) {
+            if ($(':not(body):focus').length === 0) {
+              // Changed form to body to exclude the default body focus when checking for a focused element.
+              // Move focus to the first error link so users can notice the errors and navigate to the related field.
               // See https://stackoverflow.com/questions/46134247/jquery-setting-focus-doesnt-work-in-ie11/
-            
+              $errorContainer.find('a').first().focus();            
             }
           } else {
             if ($input.is(':checkbox')) {
@@ -130,8 +137,9 @@
             validateInput('biography', 'Please tell us something about your history!');
             validateInput('gender', 'Please tell us your gender!');
             validateInput('accept_agbs', 'You must accept our terms and conditions!');
-      
-            if ($('.error').length === 0) {
+
+            // Changed .error to .errors to check the actual error container before showing the success alert.
+            if ($('.errors').length === 0) {
               return alert('All inputs are valid.');
             }
           }
